@@ -4,15 +4,30 @@ Paper: (https://arxiv.org/abs/2509.07030).
 
 ## Demonstration
 
-See `demo.ipynb` for a demonstration of the Minimalist Thompson Sampling (MINTS) algorithm for dynamic pricing.
-- Candidate prices: $0.3, 0.4, 0.5, 0.6, 0.7$. Let $p_j = (2 + j) / 10$.
-- Valuation distribution of customers: $\mathcal{U} [0, 1]$ (unknown to the algorithm).
-- Binary demand: given a posted price $p$, a customer with valuation $v$ makes a purchase if $v \geq p$.
-- Unknown parameters: $\theta_j = \mathbb{P} ( v \geq p_j )$ for $j \in [5]$.
-- Monotonicity constraints: $1 \geq \theta_1 \geq \cdots \geq \theta_5 \geq 0$.
-- Lipschitz constraints: $| \theta_j - \theta_{j+1} | \leq |p_j - p_{j+1}|$ for $j \in [4]$.
+See `demo.ipynb` for a demonstration of the MINimalist Thompson Sampling (MINTS) algorithm for dynamic pricing. Below is a description of the problem.
 
-We plot the generalized posterior distributions of the optimal price at specific times.
+### Model
+
+Let $D_0 = \varnothing$ be an empty dataset. At time $t \geq 1$,
+- we choose a feasible price $x_t$ for a product based on historical data $D_{t-1}$;
+- a customer with valuation $v_t$ sees the price and makes a purchase if $v_t \geq x_t$;
+- we observe a binary demand $\phi_t = \mathbf{1} ( v_t \geq x_t )$ and update our dataset to $D_t = D_{t-1} \cup \lbrace (x_t, \phi_t)  \rbrace$.
+
+Assume that
+- the feasible prices are $p_1 < \cdots < p_K$;
+- $\lbrace v_t \rbrace_{t=1}^{\infty}$ are independent samples from an unknown distribution $\rho$, whose density is bounded by a known constant $L$.
+
+Each price $p$ is associated with an expected revenue $R(p) = p \cdot \mathbb{P}_{v \sim \rho} ( v \geq p )$. The goal is to maximize this objective:
+
+$$ \max_{j \in [K] } R(p_j). $$
+  
+The above model has $K$ unknown parameters: $\theta_j = \mathbb{P}_{v \sim \rho} ( v \geq p_j )$ for $j \in [K]$. They satisfy the following constraints:
+- Monotonicity: $1 \geq \theta_1 \geq \cdots \geq \theta_K \geq 0$;
+- Lipschitz continuity: $\theta_j - \theta_{j+1} \leq L ( p_{j+1} - p_{j} )$ for $j \in [K - 1]$.
+
+### Experiment
+
+Our demonstration uses $K = 5$, $p_j = (2 + j) / 5$, $L = 1$ and $\rho = \mathcal{U} [0, 1]$. The MINTS algorithm knows $\lbrace p_j \rbrace_{j=1}^K$ and $L$ but not $\rho$. Below is an illustration of how the generalized posterior distribution of the optimal price evolves over time.
 
 <p align="center">
     <img src="posterior_snapshots.png" alt="Demonstration" width="1000" height="800" />
