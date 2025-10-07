@@ -15,7 +15,7 @@ See `demo.ipynb` for a demonstration of the Minimalist Thompson Sampling (MINTS)
 We plot the generalized posterior distributions of the optimal price at specific times.
 
 <p align="center">
-    <img src="posterior_snapshots.png" alt="Demonstration" width="500" height="400" />
+    <img src="posterior_snapshots.png" alt="Demonstration" width="1000" height="800" />
 </p>
 
 
