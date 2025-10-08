@@ -4,13 +4,13 @@ Paper: (https://arxiv.org/abs/2509.07030).
 
 ## Demonstration
 
-See `demo.ipynb` for a demonstration of the MINimalist Thompson Sampling (MINTS) algorithm for dynamic pricing. Below is a description of the problem.
+See `demo.ipynb` for a demonstration of the MINimalist Thompson Sampling (MINTS) algorithm for dynamic pricing. Below is a description of the experiment.
 
-### Model
+### Problem setup
 
-Let $D_0 = \varnothing$ be an empty dataset. At time $t \geq 1$,
-- we choose a feasible price $x_t$ for a product based on historical data $D_{t-1}$;
-- a customer with valuation $v_t$ sees the price and makes a purchase if $v_t \geq x_t$;
+Consider selling a product to a sequence of potential buyers. Let $D_0 = \varnothing$ be an empty dataset. At time $t \geq 1$,
+- we choose a price $x_t$ from a feasible set, based on historical data $D_{t-1}$;
+- a potential buyer with valuation $v_t$ sees the price and makes a purchase if $v_t \geq x_t$;
 - we observe a binary demand $\phi_t = \mathbf{1} ( v_t \geq x_t )$ and update our dataset to $D_t = D_{t-1} \cup \lbrace (x_t, \phi_t)  \rbrace$.
 
 Assume that
@@ -25,9 +25,14 @@ The above model has $K$ unknown parameters: $\theta_j = \mathbb{P}_{v \sim \rho}
 - Monotonicity: $1 \geq \theta_1 \geq \cdots \geq \theta_K \geq 0$;
 - Lipschitz continuity: $\theta_j - \theta_{j+1} \leq L ( p_{j+1} - p_{j} )$ for $j \in [K - 1]$.
 
+The MINTS algorithm maintains a distributional estimate of the optimal price to capture the uncertainties. Starting from a prior distribution, such as the uniform distribution over $\lbrace p_j \rbrace_{j=1}^K$, MINTS conducts Bayes-type belief updates as data comes in. In each round, it randomly samples a price from the current posterior distribution. 
+
+In contrast, fully Bayesian approaches, including Thompson sampling, require a prior for all the unknown parameters $\lbrace \theta_j \rbrace_{j=1}^K$. Such prior is difficult to design due to the constraints. Computing and sampling from the posterior distribution is also hard.
+
+
 ### Experiment
 
-Our demonstration uses $K = 5$, $p_j = (2 + j) / 5$, $L = 1$ and $\rho = \mathcal{U} [0, 1]$. The MINTS algorithm knows $\lbrace p_j \rbrace_{j=1}^K$ and $L$ but not $\rho$. Below is an illustration of how the generalized posterior distribution of the optimal price evolves over time.
+Our demonstration uses $K = 5$, $p_j = (2 + j) / 10$, $L = 1$ and $\rho = \mathcal{U} [0, 1]$. The MINTS algorithm has access to $\lbrace p_j \rbrace_{j=1}^K$ and $L$ but not $\rho$. Below is an illustration of how the generalized posterior distribution of the optimal price evolves over time.
 
 <p align="center">
     <img src="posterior_snapshots.png" alt="Demonstration" width="1000" height="800" />
