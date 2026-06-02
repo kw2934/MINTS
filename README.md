@@ -44,6 +44,9 @@ To reproduce the numerical results in Section 6, please refer to the folder `Exp
 - Use `MAB_experiments.ipynb` to run the experiments. The main functions are written in `experiments.py`.
 - The outcomes are stored in the compressed folder named `results.zip`. For statistical analysis and visualization, unzip the data folder and use `summary.ipynb`.
 
+## Acknowledgement
+
+This repository was developed with coding assistance from Claude Sonnet 4.6 and GPT-5.4.
 
 ## Citation
 ```
